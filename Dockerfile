@@ -32,4 +32,5 @@ RUN export arch=$(dpkg --print-architecture) && wget --no-check-certificate --pr
   github-assets-uploader -version
 
 COPY *.sh /
+RUN chmod +x /*.sh
 ENTRYPOINT ["/entrypoint.sh"]
