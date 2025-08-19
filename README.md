@@ -1,6 +1,4 @@
 # Go Release GitHub Action
-![Build Docker](https://github.com/wangyoucao577/go-release-action/workflows/Build%20Docker/badge.svg) ![PR Build](https://github.com/wangyoucao577/go-release-action/workflows/PR%20Build/badge.svg) [![Test](https://github.com/wangyoucao577/go-release-action/actions/workflows/autotest.yml/badge.svg)](https://github.com/wangyoucao577/go-release-action/actions/workflows/autotest.yml)            
-Automatically publish `Go` binaries to Github Release Assets through Github Action.
 
 ## Features
 - Build `Go` binaries for release and publish to Github Release Assets.
@@ -136,9 +134,3 @@ jobs:
         binary_name: "test-binary"
         extra_files: LICENSE README.md
 ```
-
-### More Examples
-Welcome share your usage for other people's reference!
-- [wiki/More-Examples](https://github.com/wangyoucao577/go-release-action/wiki/More-Examples)
-
-[:clap:](":clap:")[:clap:](":clap:")[:clap:](":clap:") Enjoy! Welcome [star](https://github.com/wangyoucao577/go-release-action/) if like it[:smile:](:smile:)

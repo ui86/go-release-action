@@ -21,9 +21,9 @@ jobs:
       run: echo IMAGE_TAG=$(basename ${GITHUB_REF}) >> ${GITHUB_ENV}
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
-    - name: Append latest if master branches # env '${IMAGE_TAG},latest'
-      if: endsWith(github.ref, 'master')
-      run: echo IMAGE_TAG=${IMAGE_TAG},master,latest >> ${GITHUB_ENV}
+    - name: Append latest if main branches # env '${IMAGE_TAG},latest'
+      if: endsWith(github.ref, 'main')
+      run: echo IMAGE_TAG=${IMAGE_TAG},main,latest >> ${GITHUB_ENV}
     - name: Environment Printer
       uses: managedkaos/print-env@v1.0
 
