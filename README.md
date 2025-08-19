@@ -53,6 +53,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: linux
         goarch: amd64
+```
 
 ## 🆕 交叉编译支持
 
