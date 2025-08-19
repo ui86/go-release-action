@@ -31,6 +31,8 @@ RUN export arch=$(dpkg --print-architecture) && wget --no-check-certificate --pr
   rm -f github-assets-uploader.tar.gz && \
   github-assets-uploader -version
 
+# 复制所有shell脚本到容器根目录
 COPY *.sh /
+# 设置脚本执行权限
 RUN chmod +x /*.sh
 ENTRYPOINT ["/entrypoint.sh"]

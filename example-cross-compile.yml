@@ -1,0 +1,146 @@
+# 示例 GitHub Actions 工作流：多架构交叉编译
+# 展示如何使用优化后的 go-release-action 进行多架构编译
+
+name: 多架构交叉编译示例
+
+on:
+  release:
+    types: [created]
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  # 多架构并行构建
+  build-cross-platform:
+    name: 构建 ${{ matrix.goos }}/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          # Linux 各架构
+          - goos: linux
+            goarch: amd64
+            cgo_enabled: '1'  # 启用CGO，使用默认编译器
+          - goos: linux
+            goarch: arm64
+            cgo_enabled: '1'  # 启用CGO，自动安装ARM64交叉编译器
+          - goos: linux
+            goarch: arm
+            goarm: '7'
+            cgo_enabled: '1'  # 启用CGO，自动安装ARM交叉编译器
+          - goos: linux
+            goarch: 386
+            cgo_enabled: '1'  # 启用CGO，自动安装i386交叉编译器
+          - goos: linux
+            goarch: mips
+            cgo_enabled: '1'  # 启用CGO，自动安装MIPS交叉编译器
+          - goos: linux
+            goarch: mips64le
+            cgo_enabled: '1'  # 启用CGO，自动安装MIPS64LE交叉编译器
+          
+          # Windows 各架构（不需要交叉编译器）
+          - goos: windows
+            goarch: amd64
+            cgo_enabled: '0'  # Windows通常禁用CGO
+          - goos: windows
+            goarch: 386
+            cgo_enabled: '0'
+          - goos: windows
+            goarch: arm64
+            cgo_enabled: '0'
+          
+          # macOS 各架构（不需要交叉编译器）
+          - goos: darwin
+            goarch: amd64
+            cgo_enabled: '0'  # macOS交叉编译通常禁用CGO
+          - goos: darwin
+            goarch: arm64
+            cgo_enabled: '0'
+          
+          # FreeBSD
+          - goos: freebsd
+            goarch: amd64
+            cgo_enabled: '0'
+          - goos: freebsd
+            goarch: arm64
+            cgo_enabled: '0'
+
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 构建并发布
+      uses: ui86/go-release-action@v1.0.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        goos: ${{ matrix.goos }}
+        goarch: ${{ matrix.goarch }}
+        goarm: ${{ matrix.goarm }}
+        cgo_enabled: ${{ matrix.cgo_enabled }}
+        # 可选：自定义构建标志
+        build_flags: '-v'
+        # 可选：自定义 ldflags
+        ldflags: '-s -w -X main.version=${{ github.ref_name }}'
+        # 可选：压缩可执行文件
+        executable_compression: 'upx --best --lzma'
+        # 可选：包含额外文件
+        extra_files: 'LICENSE README.md'
+
+  # 纯 Go 项目示例（无 CGO 依赖）
+  build-pure-go:
+    name: 纯 Go 构建 ${{ matrix.goos }}/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: s390x
+          - goos: linux
+            goarch: ppc64le
+          - goos: linux
+            goarch: riscv64
+          - goos: openbsd
+            goarch: amd64
+          - goos: netbsd
+            goarch: amd64
+
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 构建并发布（禁用 CGO）
+      uses: ui86/go-release-action@v1.0.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        goos: ${{ matrix.goos }}
+        goarch: ${{ matrix.goarch }}
+        cgo_enabled: '0'  # 禁用 CGO，跳过交叉编译器安装
+        build_flags: '-v'
+        ldflags: '-s -w'
+
+  # CGO 项目示例（需要 C 库依赖）
+  build-cgo-project:
+    name: CGO 项目构建
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, '[cgo]')  # 只在提交消息包含 [cgo] 时运行
+
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 构建 ARM64 版本（启用 CGO）
+      uses: ui86/go-release-action@v1.0.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        goos: linux
+        goarch: arm64
+        cgo_enabled: '1'  # 启用 CGO，自动安装 ARM64 交叉编译器
+        # CGO 项目可能需要额外的构建标志
+        build_flags: '-v -tags cgo'
+        # 预命令：安装 CGO 依赖
+        pre_command: 'apt-get update && apt-get install -y libssl-dev'

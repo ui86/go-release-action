@@ -31,6 +31,10 @@ inputs:
     description: 'The `Go` compiler version.'
     required: false
     default: ''
+  cgo_enabled:
+    description: 'Enable CGO for cross compilation. Set to 0 to disable CGO and skip cross-compiler installation.'
+    required: false
+    default: '1'
   build_flags:
     description: 'Additional arguments to pass the go build command.'
     required: false
@@ -124,9 +128,10 @@ runs:
     - ${{ inputs.goos }}
     - ${{ inputs.goarch }}
     - ${{ inputs.goamd64 }}
-    - ${{ inputs.goarm }}    
-    - ${{ inputs.gomips }}    
+    - ${{ inputs.goarm }}
+    - ${{ inputs.gomips }}
     - ${{ inputs.goversion }}
+    - ${{ inputs.cgo_enabled }}
     - ${{ inputs.build_flags}}
     - ${{ inputs.ldflags }}
     - ${{ inputs.project_path }}

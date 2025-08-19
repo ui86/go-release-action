@@ -1,12 +1,15 @@
 #!/bin/bash -eux
 
-# prepare golang
-source /setup-go.sh 
+# 准备golang环境
+source /setup-go.sh
 
-# easy to debug if anything wrong
+# 设置交叉编译器（如果需要CGO支持）
+source /setup-cross-compiler.sh
+
+# 方便调试，显示环境信息
 go version
 env
 
-# build & release go binaries
+# 构建并发布go二进制文件
 /release.sh
 
