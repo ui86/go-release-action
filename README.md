@@ -1,5 +1,7 @@
 # Go Release GitHub Action
 
+## Fork from [wangyoucao577/go-release-action](https://github.com/wangyoucao577/go-release-action)
+
 ## Features
 - Build `Go` binaries for release and publish to Github Release Assets.
 - Customizable `Go` versions. `latest` by default.
@@ -44,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: ui86/go-release-action@v1
+    - uses: ui86/go-release-action@v1.0.1
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: linux

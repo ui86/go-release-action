@@ -3,7 +3,7 @@ FROM debian:bookworm-slim
 ARG UPX_VER
 ARG UPLOADER_VER
 ENV UPX_VER=${UPX_VER:-4.0.0}
-ENV UPLOADER_VER=${UPLOADER_VER:-v0.13.0}
+ENV UPLOADER_VER=${UPLOADER_VER:-v1.0.0}
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
   curl \
@@ -25,7 +25,7 @@ RUN export arch=$(dpkg --print-architecture) && wget --no-check-certificate --pr
   upx --version
 
 # github-assets-uploader to provide robust github assets upload
-RUN export arch=$(dpkg --print-architecture) && wget --no-check-certificate --progress=dot:mega https://github.com/wangyoucao577/assets-uploader/releases/download/${UPLOADER_VER}/github-assets-uploader-${UPLOADER_VER}-linux-${arch}.tar.gz -O github-assets-uploader.tar.gz && \
+RUN export arch=$(dpkg --print-architecture) && wget --no-check-certificate --progress=dot:mega https://github.com/ui86/assets-uploader/releases/download/${UPLOADER_VER}/github-assets-uploader-${UPLOADER_VER}-linux-${arch}.tar.gz -O github-assets-uploader.tar.gz && \
   tar -zxf github-assets-uploader.tar.gz && \
   mv github-assets-uploader /usr/sbin/ && \
   rm -f github-assets-uploader.tar.gz && \
